@@ -14,7 +14,6 @@
       	<h1 class="display-4">Hello, ${user.name}</h1>
       	<p class="lead">You have access this page for <span id="counter">${user.counter}</span> times</p>
       	<hr class="my-4">
-      	<p>Let play something <a href="/kids/play?a=1&a=2&b=1&b=2">here</a></p>
       </div>
     </div>
   </body>

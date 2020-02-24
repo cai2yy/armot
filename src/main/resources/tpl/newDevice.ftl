@@ -19,7 +19,7 @@
           <input type="text" name="deviceName" class="form-control" placeholder="设备名称">
         </div>
         <div class="col-md-2">
-          <button type="submit" class="btn btn-primary">登录</button>
+          <button type="submit" class="btn btn-primary">提交</button>
         </div>
       </div>
       </form>

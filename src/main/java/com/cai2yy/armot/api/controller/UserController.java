@@ -51,7 +51,6 @@ public class UserController implements Controller {
         User user = new User(username);
         String sid = UUID.randomUUID().toString();
         session.setUser(sid, user);
-        ctx.addCookie("kids_sid", sid);
         ctx.redirect("/user");
 
     }

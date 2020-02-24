@@ -83,8 +83,8 @@ public class DeviceController implements Controller {
 
         var params = new HashMap<String, Object>();
         params.put("req", req);
-        params.put("abc", device);
-        ctx.render("playground.ftl", params);
+        params.put("abc", device.getType());
+        ctx.render("show.ftl", params);
 
     }
 
@@ -97,7 +97,7 @@ public class DeviceController implements Controller {
         // 此处的params可以是多重Map，例如按以下写法，前端可由{abc.a}获取到"TestSuccess"
         params.put("abc", "TestSuccess");
 
-        ctx.render("playground.ftl", params);
+        ctx.render("show.ftl", params);
     }
 
     public void RPC(HttpContext ctx, HttpRequest req) {
