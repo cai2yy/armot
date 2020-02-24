@@ -1,5 +1,0 @@
-.gitignore
-.idea
-*.iml
-src/test/
-src/main/java/lib/cjhttp/demo/
