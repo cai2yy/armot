@@ -44,7 +44,7 @@ cjhttp: https://github.com/cai2yy/cjhttp
 - 第三方插件可插拔
 - 通过mqtt实现的RPC调用
 
-#### 采用的第三方轮子
+#### 4. 采用的第三方轮子
 web端:
 - netty -> http容器的底层框架,线程池以及Future回调
 - freemarker -> 前端静态模板引擎
@@ -53,16 +53,17 @@ web端:
 E端:
 - zigbee2mqtt (node.js) -> 实现zigbee和mqtt的通信协议转换
 
-#### 硬件
+#### 5. 硬件
 - 小米智能插座（zigbee）
 - zigbee Dongle（抓包器）
 
-#### 不足
+#### 6. 不足
 - 高并发的优化
 - 没有做基于数据库的持久化
 - 轮子都是自己搭的，非常简陋，性能和稳定性难以胜任工业应用场景
 
-#### Demo
+Demo
+---
 通过web端远程读取并控制小米智能插座（相当于云端网关），此外还具有平台管理功能，可管理多个设备
 
 
