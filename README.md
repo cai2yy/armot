@@ -12,12 +12,9 @@ Web-Side：一个IOT智能硬件管理平台，可通过RPC方式远程对E端�
 ---
 #### 1. web服务器框架
 基于netty实现的 -> 简单web服务器
-- 绑定：
->创建Router -> 绑定各个Controller -> 在各Controller内实现Route方法，
-描述url与具体HandlerFunction（该Controller内的方法）的对应关系
-- 响应http请求：
-> netty读取信息 -> MessageCollector -> dispatcher 
->-> Router(根路由) -> Router（执行路由）-> HandlerFunction
+
+cjhttp: https://github.com/cai2yy/cjhttp
+
 - 部署：
 > 部署静态资源
 - 作为web容器：
@@ -36,10 +33,10 @@ Web-Side：一个IOT智能硬件管理平台，可通过RPC方式远程对E端�
 > - 热部署
 
 #### 2. 应用框架
-- IOC+全局单例控制
-    - JDK反射
-    - JDK注解
-- 基于上述机制搭建的 -> 后端MVC框架
+- 基于JDK反射、注解机制实现的 -> IOC+全局单例控制
+
+    cjioc: https://github.com/cai2yy/cjioc
+- 基于此搭建的 -> 后端MVC框架
 
 #### 3. 应用核心机制
 - 全局统筹的异步任务管理机制
@@ -48,12 +45,13 @@ Web-Side：一个IOT智能硬件管理平台，可通过RPC方式远程对E端�
 - 通过mqtt实现的RPC调用
 
 #### 采用的第三方轮子
-- netty -> http容器的底层框架
-- netty.util.concurrent: 线程池和Future/Promise机制
+web端:
+- netty -> http容器的底层框架,线程池以及Future回调
 - freemarker -> 前端静态模板引擎
-- Guava -> 异步任务回调
 - mqttv3 -> mqtt模块
-- zigbee2mqtt -> 实现zigbee和mqtt的通信协议转换
+
+E端:
+- zigbee2mqtt (node.js) -> 实现zigbee和mqtt的通信协议转换
 
 #### 硬件
 - 小米智能插座（zigbee）
@@ -68,47 +66,12 @@ Web-Side：一个IOT智能硬件管理平台，可通过RPC方式远程对E端�
 通过web端远程读取并控制小米智能插座（相当于云端网关），此外还具有平台管理功能，可管理多个设备
 
 
-CJHttp
+Cai2yy
 ---
-
-### 路由映射规则：
-
-跟路由绑定子路由
-```
-router.child("/device", new NewsController());
-```
-
-子路由类（或称Controller类）
-- 需实现Controller接口
-- 需重写public Router route()方法，在内部定义子路由映射规则
-    - 每个函数都只能绑定一级路径（例如"/", "/edit", "/int")
-    - handler()函数第一个参数中的"int"为保留关键字，能映射到所有的数字类型
-```
-@Overide
-public Router route() {
-        return new Router()
-                .handler("/", "GET", this::showDevice)
-                .handler("/int", "GET", this::getDevice);
-    
-    }
-``` 
-- 定义具体handler（即实现函数）
-    - 传参格式固定为(HttpContext ctx, HttpRequest req)
-```
-/** 形如"localhost:8080/device/12"的get类型http访问会被映射到该方法 */
-public void getDevice(HttpContext ctx, HttpRequest req) {
-        
-        // 通过对req的处理提取所需参数
-        int device = req.path();
-
-        // http错误返回
-        if (device == null) {
-            ctx.abort(404, "错误！没有找到该设备");
-            return;
-        }
-
-        // http正确返回
-        ctx.render("playground.ftl", params);
-
-    }
-``` 
+https://github.com/cai2yy
+- ArmOT: 边缘计算IOT软件+数据上云web端管理平台
+> https://github.com/cai2yy/armot
+- CJHttp: 基于netty实现的轻便web框架（http）
+> https://github.com/cai2yy/cjhttp
+- CJIoc：多功能的轻量级IOC框架
+> https://github.com/cai2yy/cjioc

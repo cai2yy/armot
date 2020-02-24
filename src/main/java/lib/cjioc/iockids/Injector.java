@@ -27,6 +27,7 @@ import java.util.function.Consumer;
  * injector.getInstance(XX.class)
  * @time: 2020/2/15 0:38
  */
+
 @Data
 public class Injector {
 
