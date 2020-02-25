@@ -34,7 +34,7 @@ public class ArmIot {
     EventBus eventBus;
 
     @Inject
-    @Named("ComponentDiscoveryService")
+    @Named("ComponentService")
     ComponentService componentService;
 
     EventExecutorGroup executor = new NioEventLoopGroup();

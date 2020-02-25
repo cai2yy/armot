@@ -33,7 +33,7 @@ public class Application {
                 .resource("/pub", "/static")
                 .child("/device", injector.getInstance(DeviceController.class));
         // 初始化分发器，设定根url路径
-        var rd = new RequestDispatcher("kids", router)
+        var rd = new RequestDispatcher("", router)
                 .templateRoot("/tpl");
 
         var server = new HttpServer("localhost", 8080, 2, 16, rd);

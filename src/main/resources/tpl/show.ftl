@@ -11,7 +11,7 @@
   <body>
     <div class="container">
       <div class="jumbotron">
-      	<h1 class="display-4">PlayGround it is</h1>
+      	<h1 class="display-4">My Devices</h1>
       	<hr class="my-4">
       	<#list req.allParams() as name, values>
       		<#list values as value>

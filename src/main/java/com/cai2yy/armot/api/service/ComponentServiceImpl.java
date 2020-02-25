@@ -23,14 +23,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Slf4j
-@Named("ComponentDiscoveryService")
+@Singleton
+@Named("ComponentService")
 public class ComponentServiceImpl implements ComponentService {
 
     @Inject

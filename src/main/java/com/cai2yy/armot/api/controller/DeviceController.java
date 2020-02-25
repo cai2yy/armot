@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.cai2yy.armot.api.bean.Component;
 import lib.cjhttp.server.Controller;
 import lib.cjhttp.server.HttpContext;
 import lib.cjhttp.server.HttpRequest;
@@ -34,7 +35,7 @@ public class DeviceController implements Controller {
     DeviceService deviceService;
 
     @Inject
-    @Named("ComponentDiscoveryService")
+    @Named("ComponentService")
     ComponentService componentService;
 
     private final static Logger LOG = LoggerFactory.getLogger(DeviceController.class);
