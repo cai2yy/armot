@@ -14,12 +14,14 @@ public class FreemarkerEngine implements ITemplateEngine {
 
 	public FreemarkerEngine(String templateRoot) {
 		this.config = new Configuration(Configuration.VERSION_2_3_28);
+		// freemarker加载模板目录
 		this.config.setClassForTemplateLoading(FreemarkerEngine.class, templateRoot);
 	}
 
 	@Override
 	public String render(String path, Map<String, Object> context) {
 		try {
+			// 获取模板
 			var template = config.getTemplate(path, "utf-8");
 			StringWriter writer = new StringWriter();
 			template.process(context, writer);

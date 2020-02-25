@@ -57,7 +57,6 @@ public class DeviceController implements Controller {
     }
 
     public void createDevice(HttpContext ctx, HttpRequest req) {
-        System.out.println("创建新设备了");
         String type = req.mixedParam("deviceType");
         String name = req.mixedParam("deviceName");
         Device device = deviceService.createDevice(type, name);
@@ -65,14 +64,10 @@ public class DeviceController implements Controller {
             ctx.abort(500, "错误！请输入设备类型");
             return;
         }
-
-        System.out.println("创建新设备成功！" + device);
-        System.out.println("/device/" + device.getId());
         ctx.redirect("/device/" + device.getId());
     }
 
     public void getDevice(HttpContext ctx, HttpRequest req) {
-        System.out.println("执行了");
         String path = req.path();
         int deviceId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
         Device device = deviceService.getDevice(deviceId);

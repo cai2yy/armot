@@ -30,7 +30,6 @@ public class UserController implements Controller {
 
     @Override
     public Router route() {
-        //todo 为各个url绑定函数
         return new Router()
                 .handler("/login", "GET", this::getLoginPage)
                 .handler("/login", "POST", this::login);

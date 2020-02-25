@@ -66,7 +66,7 @@ public class StaticRequestHandlerFunction implements HandlerFunction {
 		InputStream is = null;
 		byte[] bytes = null;
 		try {
-			is = this.getClass().getResourceAsStream(path);
+			is = this.getClass().getResourceAsStream(path.replaceAll("\\\\", "/"));
 			if (is == null) {
 				throw new AbortException(HttpResponseStatus.NOT_FOUND);
 			}
