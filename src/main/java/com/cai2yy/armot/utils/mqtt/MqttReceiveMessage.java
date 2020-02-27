@@ -6,9 +6,11 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import com.cai2yy.armot.core.ArmIot;
+import com.cai2yy.armot.core.ArmOT;
 
-
+/**
+ * 接受mqtt数据的工具类，提供自动初始化封装
+ */
 public class MqttReceiveMessage {
 
     private static int QoS = 1;
@@ -16,10 +18,10 @@ public class MqttReceiveMessage {
     private static MemoryPersistence memoryPersistence = null;
     private static MqttConnectOptions mqttConnectOptions = null;
     private static MqttClient mqttClient  = null;
-    private static ArmIot armIot = null;
+    private static ArmOT armOT = null;
 
     MqttReceiveMessage() {
-        MqttReceiveMessage.armIot = Injector.getInjector().getArmIot();
+        MqttReceiveMessage.armOT = Injector.getInjector().getInstance(ArmOT.class);
     }
 
     public static void init(String clientId) {
@@ -41,8 +43,8 @@ public class MqttReceiveMessage {
             mqttConnectOptions.setConnectionTimeout(30);
             mqttConnectOptions.setKeepAliveInterval(45);
             if(null != mqttClient && !mqttClient.isConnected()) {
-                MqttReceiveCallback mqttReceiveCallback = new MqttReceiveCallback(armIot);
-                System.out.println("创建途径2");
+                MqttReceiveCallback mqttReceiveCallback = new MqttReceiveCallback(armOT);
+                System.out.println("由接收数据工具类创建mqttClient");
                 //todo
                 mqttClient.setCallback(mqttReceiveCallback);
                 try {
@@ -74,8 +76,10 @@ public class MqttReceiveMessage {
             }else {
                 System.out.println("there is error");
             }
-        }else {
-            init("123444");
+        }
+        // 通过该静态方法直接初始化并重新接收数据
+        else {
+            init(String.valueOf(MqttClientAOT.mqttMaxId.getAndIncrement()));
             receive(topic);
         }
     }

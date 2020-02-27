@@ -1,7 +1,6 @@
 package com.cai2yy.armot.utils.mqtt;
 
 
-import lib.cjioc.iockids.Injector;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -9,19 +8,22 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import com.cai2yy.armot.core.ArmIot;
+import com.cai2yy.armot.core.ArmOT;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class MqttClient {
+public class MqttClientAOT {
 
     public static org.eclipse.paho.client.mqttv3.MqttClient mqttClient = null;
     private static MemoryPersistence memoryPersistence = null;
     private static MqttConnectOptions mqttConnectOptions = null;
-    private static ArmIot armIot;
+    private static ArmOT armOT;
+    protected static AtomicInteger mqttMaxId = new AtomicInteger(101);
 
-    public MqttClient() {
-        MqttClient.armIot = Injector.getInjector().getArmIot();
-        init("123");
+    public MqttClientAOT() {
+        // MqttClientAOT.armIot = Injector.getInjector().getInstance(ArmIot.class);
+        init(String.valueOf(mqttMaxId.getAndIncrement()));
     }
 
     public static void init(String clientId) {
@@ -55,13 +57,13 @@ public class MqttClient {
             if (!mqttClient.isConnected()) {
 
 //			创建回调函数对象
-                MqttReceiveCallback mqttReceiveCallback = new MqttReceiveCallback(armIot);
+                MqttReceiveCallback mqttReceiveCallback = new MqttReceiveCallback(armOT);
 //			客户端添加回调函数
                 mqttClient.setCallback(mqttReceiveCallback);
-                System.out.println("创建途径1");
+                System.out.println("主动创建mqttClient");
 //			创建连接
                 try {
-                    System.out.println("创建连接");
+                    System.out.println("尝试连接");
                     mqttClient.connect(mqttConnectOptions);
                 } catch (MqttException e) {
                     // TODO Auto-generated catch block
@@ -110,8 +112,8 @@ public class MqttClient {
     //	发布消息
     public void publishMessage(String pubTopic, String message, int qos) {
         if (null != mqttClient && mqttClient.isConnected()) {
-            System.out.println("发布消息   " + mqttClient.isConnected());
-            System.out.println("id:" + mqttClient.getClientId());
+            System.out.println("发布消息  " + mqttClient.isConnected());
+            System.out.println("id: " + mqttClient.getClientId());
             MqttMessage mqttMessage = new MqttMessage();
             mqttMessage.setQos(qos);
             mqttMessage.setPayload(message.getBytes());
@@ -154,7 +156,7 @@ public class MqttClient {
                 System.out.println("mqttClient is null or connect");
             }
         } else {
-            init("123");
+            init(String.valueOf(mqttMaxId.getAndIncrement()));
         }
 
     }

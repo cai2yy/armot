@@ -15,20 +15,24 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.UUID;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class HttpServer {
 	private final static Logger LOG = LoggerFactory.getLogger(HttpServer.class);
 
+	public String UUID;
 	private String ip;
 	private int port;
 	private int ioThreads;
-	private int workerThreads;
 	private IRequestDispatcher dispatcher;
 
-	public HttpServer(String ip, int port, int ioThreads, int workerThreads, IRequestDispatcher dispatcher) {
+	public HttpServer(String ip, int port, int ioThreads, IRequestDispatcher dispatcher) {
+		this.UUID = java.util.UUID.randomUUID().toString();
 		this.ip = ip;
 		this.port = port;
 		this.ioThreads = ioThreads;
-		this.workerThreads = workerThreads;
 		// TODO 用户定义的dispatcher
 		this.dispatcher = dispatcher;
 	}
@@ -40,10 +44,23 @@ public class HttpServer {
 
 	public void start() {
 		bootstrap = new ServerBootstrap();
-		group = new NioEventLoopGroup(ioThreads);
+
+		var threadFactory = new ThreadFactory() {
+			AtomicInteger seq = new AtomicInteger();
+
+			@Override
+			public Thread newThread(Runnable r) {
+				Thread t = new Thread(r);
+				t.setName("CJHttp-" + seq.getAndIncrement());
+				return t;
+			}
+		};
+		group = new NioEventLoopGroup(ioThreads, threadFactory);
+
 		bootstrap.group(group);
 		// dispatcher -> collector
-		collector = new MessageCollector(workerThreads, dispatcher);
+		collector = new MessageCollector(dispatcher);
+
 		bootstrap.channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
 			public void initChannel(SocketChannel ch) throws Exception {
@@ -58,8 +75,10 @@ public class HttpServer {
 		});
 		bootstrap.option(ChannelOption.SO_BACKLOG, 100).option(ChannelOption.SO_REUSEADDR, true)
 				.option(ChannelOption.TCP_NODELAY, true).childOption(ChannelOption.SO_KEEPALIVE, true);
+
 		serverChannel = bootstrap.bind(this.ip, this.port).channel();
-		LOG.info("http服务启动成功 @ {}:{}", ip, port);
+
+		LOG.info("http服务启动成功 @ {}:{}, UUID:{}", ip, port, UUID);
 	}
 
 	/**

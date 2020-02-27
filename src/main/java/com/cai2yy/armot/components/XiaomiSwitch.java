@@ -1,7 +1,7 @@
 package com.cai2yy.armot.components;
 
 import com.alibaba.fastjson.JSONObject;
-import com.cai2yy.armot.utils.mqtt.MqttClient;
+import com.cai2yy.armot.utils.mqtt.MqttClientAOT;
 
 import javax.inject.Singleton;
 
@@ -17,11 +17,11 @@ public class XiaomiSwitch {
     public int electricity;
 
     public void turnOn() {
-        MqttClient mqttClient = new MqttClient();
+        MqttClientAOT mqttClientAOT = new MqttClientAOT();
         JSONObject payload = new JSONObject();
         payload.put("on", "on");
         String topic = "";
-        mqttClient.publishMessage(topic, payload.toString(), 1);
+        mqttClientAOT.publishMessage(topic, payload.toString(), 1);
     }
 
     public void turnOff() {

@@ -1,6 +1,6 @@
 package com.cai2yy.armot.utils.mqtt;
 
-import com.cai2yy.armot.core.ArmIot;
+import com.cai2yy.armot.core.ArmOT;
 
 import java.util.Date;
 
@@ -18,18 +18,18 @@ public class mqttTest {
 
     public static void publish(String topic, String msg, long timeInterval) throws InterruptedException {
         // publish方法必须new一个MyMqttClient实例
-        MqttClient mqttClient = new MqttClient();
+        MqttClientAOT mqttClientAOT = new MqttClientAOT();
         Date date = new Date();
-        mqttClient.publishMessage("world", msg + date.getTime() + " 1", 1);
+        mqttClientAOT.publishMessage("world", msg + date.getTime() + " 1", 1);
         Thread.sleep(timeInterval);
-        mqttClient.publishMessage("world", msg + date.getTime() + " 2", 1);
+        mqttClientAOT.publishMessage("world", msg + date.getTime() + " 2", 1);
         Thread.sleep(timeInterval);
-        mqttClient.publishMessage("world", msg + date.getTime() + " 3", 1);
+        mqttClientAOT.publishMessage("world", msg + date.getTime() + " 3", 1);
     }
 
     public static void subscribe(String topic, long timeInterval) throws InterruptedException {
 
-        ArmIot armIot = new ArmIot();
+        ArmOT armOT = new ArmOT();
 
         //MyMqttReceiveMessage myMqttReceiveMessage = new MyMqttReceiveMessage(armIot);
 

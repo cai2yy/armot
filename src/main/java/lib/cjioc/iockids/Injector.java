@@ -1,8 +1,6 @@
 package lib.cjioc.iockids;
 
 import lib.cjioc.utils.Scanner;
-import lombok.Data;
-import com.cai2yy.armot.core.ArmIot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +12,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
@@ -27,29 +26,27 @@ import java.util.function.Consumer;
  * injector.getInstance(XX.class)
  * @time: 2020/2/15 0:38
  */
-
-@Data
+@Singleton
 public class Injector {
 
+	private Map<Class<?>, Object> singletonInstances = new ConcurrentHashMap<>();
+	private Map<Class<?>, Map<Annotation, Object>> qualifiedInstances = new ConcurrentHashMap<>();
+	{
+		singletonInstances.put(Injector.class, this);
+	}
+
+	private Map<Class<?>, Class<?>> singletonClasses = new ConcurrentHashMap<>();
+	private Map<Class<?>, Map<Annotation, Class<?>>> qualifiedClasses = new ConcurrentHashMap<>();
+
+	private Set<Class<?>> readyClasses = ConcurrentHashMap.newKeySet();
+
+	private final static Logger LOG = LoggerFactory.getLogger(Inject.class);
+
+	/** 在本项目中Injector为全局单例 */
 	public static Injector injector;
 	{
 		injector = this;
 	}
-
-	private Map<Class<?>, Object> singletonInstances = Collections.synchronizedMap(new HashMap<>());
-	{
-		singletonInstances.put(Injector.class, this);
-	}
-	private Map<Class<?>, Map<Annotation, Object>> qualifiedInstances = Collections.synchronizedMap(new HashMap<>());
-
-	private Map<Class<?>, Class<?>> singletonClasses = Collections.synchronizedMap(new HashMap<>());
-	private Map<Class<?>, Map<Annotation, Class<?>>> qualifiedClasses = Collections.synchronizedMap(new HashMap<>());
-
-	private Set<Class<?>> readyClasses = Collections.synchronizedSet(new HashSet<>());
-
-	private ArmIot armIot;
-
-	private final static Logger LOG = LoggerFactory.getLogger(Inject.class);
 
 	public static Injector getInjector() {
 		return injector;
@@ -135,7 +132,7 @@ public class Injector {
 		}
 		var os = qualifiedInstances.get(clazz);
 		if (os == null) {
-			os = Collections.synchronizedMap(new HashMap<>());
+			os = new ConcurrentHashMap<>();
 			qualifiedInstances.put(clazz, os);
 		}
 		if (os.put(annotation, obj) != null) {
@@ -198,7 +195,7 @@ public class Injector {
 		}
 		var annos = qualifiedClasses.get(parentType);
 		if (annos == null) {
-			annos = Collections.synchronizedMap(new HashMap<>());
+			annos = new ConcurrentHashMap<>();
 			qualifiedClasses.put(parentType, annos);
 		}
 		if (annos.put(annotation, clazz) != null) {

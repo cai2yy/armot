@@ -16,16 +16,14 @@
 package com.cai2yy.armot.api.service;
 
 import com.cai2yy.armot.api.bean.Component;
-import com.cai2yy.armot.core.ArmIot;
+import com.cai2yy.armot.core.ArmOT;
+import com.cai2yy.armot.utils.Conf;
 import lib.cjioc.iockids.Injector;
 import lib.cjioc.utils.Scanner;
-import lombok.extern.slf4j.Slf4j;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,14 +32,9 @@ import java.util.Optional;
 @Named("ComponentService")
 public class ComponentServiceImpl implements ComponentService {
 
-    @Inject
-    private ArmIot armIot;
-
-    private String componentsPackage;
-
-    private Map<Integer, String> componentNameDict = new HashMap<>();
-
-    private Map<String, Component> components = new HashMap<>();
+    private Map<String, Component> components;
+    private Map<Integer, String> componentNameDict;
+    private final String componentsPackage = Conf.componentsPackage;
 
     public Optional<Component> getComponent(String clazz) {
         return Optional.ofNullable(components.get(clazz));
@@ -63,21 +56,14 @@ public class ComponentServiceImpl implements ComponentService {
 
     // 在服务器加载Servlet的时候运行，并且只会被服务器调用一次
     public int init() {
-        this.armIot = Injector.getInjector().getArmIot();
-        //todo 参数可修改化
-        componentsPackage = "com.cai2yy.armot.components";
+        ArmOT armOT = Injector.getInjector().getInstance(ArmOT.class);
+        this.components = armOT.getComponents();
+        this.componentNameDict = armOT.getComponentNameDict();
         return discoverComponents();
     }
 
-    public int discoverComponents() {
-        int count = scanAndPersistComponent();
-        armIot.setComponents(this.components);
-        return count;
-    }
-
-    private int scanAndPersistComponent() {
+    private int discoverComponents() {
         List<Class<?>> componentClasses = Scanner.getClasses(componentsPackage);
-        int num = 0;
         var var1 = 0;
         for (Class<?> clazz : componentClasses) {
             // 初始化component实例并放入injector缓存中

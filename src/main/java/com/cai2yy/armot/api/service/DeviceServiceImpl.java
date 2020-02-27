@@ -1,7 +1,7 @@
 package com.cai2yy.armot.api.service;
 
 import com.cai2yy.armot.api.bean.Device;
-import com.cai2yy.armot.core.ArmIot;
+import com.cai2yy.armot.core.ArmOT;
 import lib.cjioc.iockids.Injector;
 
 import javax.inject.Named;
@@ -19,8 +19,8 @@ public class DeviceServiceImpl implements DeviceService {
     Map<Integer, Device> devices;
 
     public DeviceServiceImpl() {
-        ArmIot armIot = Injector.getInjector().getInstance(ArmIot.class);
-        devices = armIot.getDevices();
+        ArmOT armOT = Injector.getInjector().getInstance(ArmOT.class);
+        devices = armOT.getDevices();
     }
 
     @Override

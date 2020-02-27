@@ -108,7 +108,7 @@ public class DeviceController implements Controller {
 
         Method method = componentService.getMethod(componentName, methodNum);
         Class<?> deviceType = componentService.getComponentType(componentName);
-        Object componentInstance = Injector.getInjector().getSingletonInstances().get(deviceType);
+        Object componentInstance = Injector.getInjector().getInstance(deviceType);
 
         method.invoke(componentInstance, args);
     }

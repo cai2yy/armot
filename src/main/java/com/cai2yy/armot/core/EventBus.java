@@ -2,7 +2,9 @@ package com.cai2yy.armot.core;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.Future;
+import lib.cjioc.iockids.Injector;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Cai2yy
@@ -27,19 +30,19 @@ public class EventBus {
 
     Map<String, List<Listener>> eventRegistry;
 
-    EventLoopGroup executor;
+    EventExecutorGroup executors;
 
     private final static Logger LOG = LoggerFactory.getLogger(EventBus.class);
 
     public EventBus() {
-        this.eventRegistry = new HashMap<>();
-        this.executor = new NioEventLoopGroup();
+        this.eventRegistry = new ConcurrentHashMap<>();
+        this.executors = Injector.getInjector().getInstance(ArmOT.class).executors;
         LOG.info("EventBus成功创建");
     }
 
     public EventBus(int loopNum) {
         this.eventRegistry = new HashMap<>();
-        this.executor = new NioEventLoopGroup(loopNum);
+        this.executors = new NioEventLoopGroup(loopNum);
         LOG.info("EventBus成功创建");
     }
 
@@ -60,7 +63,7 @@ public class EventBus {
         }
         List<Future<Object>> futureList = new ArrayList<>();
         for (Listener listener : listenerList) {
-            Future<Object> future = executor.submit(new EventListenerThread(listener, args));
+            Future<Object> future = executors.submit(new EventListenerThread(listener, args));
             futureList.add(future);
         }
         return futureList;

@@ -1,63 +1,43 @@
 package lib.cjhttp.server.internal;
 
+import com.cai2yy.armot.core.ArmOT;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.util.concurrent.EventExecutorGroup;
+import lib.cjioc.iockids.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.CRC32;
 
-//todo 最关键的逻辑实现类
+/**
+ * 无状态类
+ * Sharable：支持并发：可以被多个channel（连接）安全地共享
+ */
 @Sharable
 public class MessageCollector extends ChannelInboundHandlerAdapter {
+
+	ArmOT armOT;
+
+	private EventExecutorGroup executors;
+	private IRequestDispatcher dispatcher;
+
 	private final static Logger LOG = LoggerFactory.getLogger(MessageCollector.class);
 
-	private ThreadPoolExecutor[] executors;
-	private IRequestDispatcher dispatcher;
-	private int requestsMaxInflight = 1000;
+	public MessageCollector(IRequestDispatcher dispatcher) {
 
-	public MessageCollector(int workerThreads, IRequestDispatcher dispatcher) {
-		var factory = new ThreadFactory() {
 
-			AtomicInteger seq = new AtomicInteger();
-
-			@Override
-			public Thread newThread(Runnable r) {
-				Thread t = new Thread(r);
-				t.setName("http-" + seq.getAndIncrement());
-				return t;
-			}
-
-		};
-
-		this.executors = new ThreadPoolExecutor[workerThreads];
-		for (int i = 0; i < workerThreads; i++) {
-			var queue = new ArrayBlockingQueue<Runnable>(requestsMaxInflight);
-			this.executors[i] = new ThreadPoolExecutor(1, 1, 30, TimeUnit.SECONDS, queue, factory,
-					new CallerRunsPolicy());
-		}
+		this.armOT = Injector.getInjector().getInstance(ArmOT.class);
+		this.executors = armOT.getExecutors();
 		this.dispatcher = dispatcher;
 	}
 
 	public void closeGracefully() {
-		for (ThreadPoolExecutor executor : executors) {
-			executor.shutdown();
-		}
-		for (ThreadPoolExecutor executor : executors) {
-			try {
-				executor.awaitTermination(10, TimeUnit.SECONDS);
-			} catch (InterruptedException ignored) {
-			}
-			executor.shutdownNow();
-		}
+		executors.shutdownGracefully();
 	}
 
 	/**
@@ -67,6 +47,8 @@ public class MessageCollector extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		LOG.info("connection comes {}", ctx.channel().remoteAddress());
+		//TODO 分布式
+		// ArmOTContextBus.initNewContext();
 	}
 
 	/**
@@ -80,19 +62,16 @@ public class MessageCollector extends ChannelInboundHandlerAdapter {
 	}
 
 	/**
-	 * 读取客户端传入信息
-	 * //todo 核心开发部分
+	 * 读取客户端传入信息，交给线程池处理
 	 * @param ctx 绑定的handler上下文
 	 * @param msg 客户端传入的信息
 	 */
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+		// 此处目前只支持处理Http协议
 		if (msg instanceof FullHttpRequest) {
 			var req = (FullHttpRequest) msg;
-			var crc32 = new CRC32();
-			crc32.update(ctx.hashCode());
-			int idx = (int) (crc32.getValue() % executors.length);
-			this.executors[idx].execute(() -> {
+			this.executors.execute(() -> {
 				dispatcher.dispatch(ctx, req);
 			});
 		}

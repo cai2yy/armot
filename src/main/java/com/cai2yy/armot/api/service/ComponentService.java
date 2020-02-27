@@ -28,8 +28,6 @@ public interface ComponentService {
 
     public int init();
 
-    public int discoverComponents();
-
     public Optional<Component> getComponent(String clazz);
 
     public String getComponentName(int ComponentId);

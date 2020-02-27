@@ -3,10 +3,10 @@
   <head>
 	  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	  <meta charset="utf8">
-	  <script src="/kids/pub/jquery-3.3.1.slim.min.js"></script>
-	  <script src="/kids/pub/popper.min.js"></script>
-	  <script src="/kids/pub/bootstrap.min.js"></script>
-	  <link rel="stylesheet" type="text/css" href="/kids/pub/bootstrap.min.css"/>
+	  <script src="/armot/pub/jquery-3.3.1.slim.min.js"></script>
+	  <script src="/armot/pub/popper.min.js"></script>
+	  <script src="/armot/pub/bootstrap.min.js"></script>
+	  <link rel="stylesheet" type="text/css" href="/armot/pub/bootstrap.min.css"/>
   </head>
   <body>
     <div class="container">

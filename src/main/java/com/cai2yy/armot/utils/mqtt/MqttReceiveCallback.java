@@ -3,16 +3,15 @@ package com.cai2yy.armot.utils.mqtt;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import com.cai2yy.armot.core.ArmIot;
+import com.cai2yy.armot.core.ArmOT;
 
 
 public class MqttReceiveCallback  implements MqttCallback {
 
-    ArmIot armIot;
+    ArmOT armOT;
 
-    MqttReceiveCallback(ArmIot armIot) {
-        this.armIot = armIot;
-        System.out.println(this.armIot);
+    MqttReceiveCallback(ArmOT armOT) {
+        this.armOT = armOT;
     }
 
     @Override
