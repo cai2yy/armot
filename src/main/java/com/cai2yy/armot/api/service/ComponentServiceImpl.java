@@ -54,6 +54,11 @@ public class ComponentServiceImpl implements ComponentService {
         return component.getActions()[methodNum];
     }
 
+    public Method getMethod(int componentId, int methodNum) {
+        Component component = components.get(getComponentName(componentId));
+        return component.getActions()[methodNum];
+    }
+
     // 在服务器加载Servlet的时候运行，并且只会被服务器调用一次
     public int init() {
         ArmOT armOT = Injector.getInjector().getInstance(ArmOT.class);
@@ -73,9 +78,8 @@ public class ComponentServiceImpl implements ComponentService {
             }
             Component newComponent = new Component(clazz);
             String componentName = clazz.getSimpleName();
-            componentNameDict.put(var1, componentName);
+            componentNameDict.put(var1++, componentName);
             components.put(componentName, newComponent);
-            var1 += 1;
         }
         return var1;
     }

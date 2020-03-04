@@ -295,7 +295,7 @@ public class Injector {
 		var cons = new ArrayList<Constructor<T>>();
 		T target = null;
 		// 1. 创建对象
-		for (var con : clazz.getDeclaredConstructors()) {
+		for (var con : clazz.getConstructors()) {
 			// 默认和无参构造器不需要"@Inject"注解
 			if (!con.isAnnotationPresent(Inject.class) && con.getParameterCount() > 0) {
 				continue;

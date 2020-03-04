@@ -86,9 +86,9 @@ public class AbstractEventEmitter implements EventEmitter {
             if (func == null) {
                 throw new Exception("params do not match");
             }
-            // remove the listener if this event can only triggered once
             func.setAccessible(true);
             func.invoke(emitter, args);
+            // remove the listener if this event can only triggered once
             if (listener.flash()) {
                 deleteListener = listener;
             }

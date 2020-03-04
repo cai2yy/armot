@@ -1,4 +1,4 @@
-package com.cai2yy.armot.utils.mqtt;
+package com.cai2yy.armot.utils.mqttclient;
 
 import com.cai2yy.armot.core.ArmOT;
 

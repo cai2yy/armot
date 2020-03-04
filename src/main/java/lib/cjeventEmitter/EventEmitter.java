@@ -1,5 +1,7 @@
 package lib.cjeventEmitter;
 
+import io.netty.channel.nio.NioEventLoop;
+
 import java.util.List;
 import java.util.Map;
 

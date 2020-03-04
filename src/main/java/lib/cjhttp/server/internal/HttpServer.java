@@ -65,6 +65,7 @@ public class HttpServer {
 			@Override
 			public void initChannel(SocketChannel ch) throws Exception {
 				var pipe = ch.pipeline();
+				//设置连接超时（长连接）
 				pipe.addLast(new ReadTimeoutHandler(10));
 				pipe.addLast(new HttpServerCodec());
 				pipe.addLast(new HttpObjectAggregator(1 << 30)); // max_size = 1g

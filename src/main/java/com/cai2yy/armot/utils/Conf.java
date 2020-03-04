@@ -11,4 +11,6 @@ public class Conf {
 
     public static final int workerThreads = 20;
 
+    public static final String XIAOMISWITCH_FRIENDLYNAME = "0x00158d0003539fb0";
+
 }

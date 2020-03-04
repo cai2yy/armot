@@ -36,4 +36,6 @@ public interface ComponentService {
 
     public Method getMethod(String componentId, int methodNum);
 
+    public Method getMethod(int componentId, int methodNum);
+
 }

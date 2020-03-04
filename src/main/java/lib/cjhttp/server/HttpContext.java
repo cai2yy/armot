@@ -24,7 +24,6 @@ public class HttpContext {
 	private ITemplateEngine templateEngine;
 	private String contextRoot;
 
-	//todo netty的Cookie类要搞懂
 	private Set<Cookie> cookies = new HashSet<>();
 
 	public HttpContext(ChannelHandlerContext ctx, String contextRoot, ITemplateEngine templateEngine) {

@@ -1,4 +1,4 @@
-package com.cai2yy.armot.utils.mqtt;
+package com.cai2yy.armot.utils.mqttclient;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import com.cai2yy.armot.api.bean.Device;

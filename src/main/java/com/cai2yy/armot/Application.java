@@ -2,6 +2,7 @@ package com.cai2yy.armot;
 
 import com.cai2yy.armot.api.bean.Device;
 import com.cai2yy.armot.api.controller.DeviceController;
+import com.cai2yy.armot.api.controller.RPCController;
 import com.cai2yy.armot.core.ArmOT;
 import lib.cjhttp.server.RequestDispatcher;
 import lib.cjhttp.server.Router;
@@ -31,7 +32,8 @@ public class Application {
         var router = new Router((ctx, req) -> {
             ctx.html("Hello, World");})
                 .resource("/pub", "/static")
-                .child("/device", injector.getInstance(DeviceController.class));
+                .child("/device", injector.getInstance(DeviceController.class))
+                .child("/rpc", injector.getInstance(RPCController.class));
         // 初始化分发器，设定根url路径
         var rd = new RequestDispatcher("armot", router)
                 .templateRoot("/tpl");

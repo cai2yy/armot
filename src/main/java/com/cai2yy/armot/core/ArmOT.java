@@ -2,6 +2,9 @@ package com.cai2yy.armot.core;
 
 import com.cai2yy.armot.api.bean.Device;
 import com.cai2yy.armot.utils.Conf;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import io.netty.channel.nio.NioEventLoop;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.Constant;
@@ -10,6 +13,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
 import lib.cjioc.iockids.Injector;
 import lombok.Data;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.cai2yy.armot.api.bean.Component;
@@ -18,6 +22,7 @@ import com.cai2yy.armot.api.service.ComponentService;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
@@ -78,15 +83,12 @@ public class ArmOT {
     public void asyncInitComponent() {
         LOG.info("开始扫描插件");
         Future<Integer> initComponentFuture = executors.submit(() -> componentService.init());
-        initComponentFuture.addListener(new FutureListener<>() {
-            @Override
-            public void operationComplete(Future<Integer> integerFuture) throws Exception {
-                var count = integerFuture.getNow();
-                LOG.info("---------- 扫描完毕,共有插件{}个 ----------", components.size());
-                var var1 = 1;
-                for (String name : components.keySet()) {
-                    LOG.info("插件{}[{}]: {} ", var1++, name, components.get(name));
-                }
+        initComponentFuture.addListener((FutureListener<Integer>) integerFuture -> {
+            var count = integerFuture.getNow();
+            LOG.info("---------- 扫描完毕,共有插件{}个 ----------", count);
+            var var1 = 1;
+            for (String name : components.keySet()) {
+                LOG.info("插件{}[{}]: {} ", var1++, name, components.get(name));
             }
         });
         //todo 写入yml配置文件
