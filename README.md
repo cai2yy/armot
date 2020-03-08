@@ -57,13 +57,13 @@ Demo
 
 测试
 ---
-localhost:8080
+localhost:8080/armot
 
-localhost:8080/device
+localhost:8080/armot/device
 
-localhost:8080/device/0
+localhost:8080/armot/device/0
 
-localhost:8080/device/new
+localhost:8080/armot/device/new
 
 Cai2yy
 ---
